@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/Atcrowdfunding-main" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/Atcrowdfunding-parent/pom.xml" />
+        <option value="$PROJECT_DIR$/Atcrowdfunding-main/pom.xml" />
+        <option value="$PROJECT_DIR$/Atcrowdfunding-manager-impl/pom.xml" />
+        <option value="$PROJECT_DIR$/Atcrowdfunding-manager-api/pom.xml" />
+        <option value="$PROJECT_DIR$/Atcrowdfunding-potal-impl/pom.xml" />
+        <option value="$PROJECT_DIR$/Atcrowdfunding-potal-api/pom.xml" />
+        <option value="$PROJECT_DIR$/Atcrowdfunding-bean/pom.xml" />
+        <option value="$PROJECT_DIR$/Atcrowdfunding-common/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_9" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+</project>
