@@ -10,6 +10,11 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+  
+  <!--自定义监听器-->
+  <listener>
+    <listener-class>com.pealipala.listener.SystemStartListener</listener-class>
+  </listener>
 
   <!-- 字符编码过滤器 -->
   <filter>
