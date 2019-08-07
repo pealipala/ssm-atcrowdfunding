@@ -15,9 +15,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="stylesheet" href="${APP_PATH}/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="${APP_PATH}/css/font-awesome.min.css">
-    <link rel="stylesheet" href="${APP_PATH}/css/main.css">
+    <link rel="stylesheet" href="${APP_PATH }/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="${APP_PATH }/css/font-awesome.min.css">
+    <link rel="stylesheet" href="${APP_PATH }/css/main.css">
     <style>
         .tree li {
             list-style-type: none;
@@ -41,24 +41,16 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li style="padding-top:8px;">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-success dropdown-toggle" data-toggle="dropdown">
-                            <i class="glyphicon glyphicon-user"></i> 张三 <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="#"><i class="glyphicon glyphicon-cog"></i> 个人设置</a></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 消息</a></li>
-                            <li class="divider"></li>
-                            <li><a href="index.html"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li style="margin-left:10px;padding-top:8px;">
-                    <button type="button" class="btn btn-default btn-danger">
-                        <span class="glyphicon glyphicon-question-sign"></span> 帮助
-                    </button>
-                </li>
+
+                <!-- HTML注释:参与编译,会生成到源码中. 所以,不能使用html注释EL表达式和JSTL标签库 -->
+                <%-- JSP注释:注释的内容不参与编译,不会生成到源码中. --%>
+
+                <!-- 动态包含:被包含的页面也会独立编译,生成字节码文件. -->
+                <%-- <jsp:include page="/WEB-INF/jsp/common/top.jsp"></jsp:include> --%>
+                <!-- 静态包含:被包含的页面不会生成独立字节码文件.
+                            将所包含的页面内容加入到当前页面,一起进行编译.
+                 -->
+                <%@ include file="/WEB-INF/jsp/common/top.jsp" %>
             </ul>
             <form class="navbar-form navbar-right">
                 <input type="text" class="form-control" placeholder="查询">
@@ -162,9 +154,9 @@
         </div>
     </div>
 </div>
-<script src="${APP_PATH}/jquery/jquery-2.1.1.min.js"></script>
-<script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
-<script src="${APP_PATH}/script/docs.min.js"></script>
+<script src="${APP_PATH }/jquery/jquery-2.1.1.min.js"></script>
+<script src="${APP_PATH }/bootstrap/js/bootstrap.min.js"></script>
+<script src="${APP_PATH }/script/docs.min.js"></script>
 <script type="text/javascript">
     $(function () {
         $(".list-group-item").click(function(){
@@ -181,4 +173,3 @@
 </script>
 </body>
 </html>
-

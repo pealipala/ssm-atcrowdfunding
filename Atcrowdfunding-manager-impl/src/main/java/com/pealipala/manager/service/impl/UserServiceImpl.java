@@ -4,6 +4,7 @@ import com.pealipala.bean.User;
 import com.pealipala.exception.LoginFailException;
 import com.pealipala.manager.dao.UserMapper;
 import com.pealipala.manager.service.UserService;
+import com.pealipala.utils.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,13 @@ public class UserServiceImpl implements UserService {
         if (user==null){
             throw new LoginFailException("用户名或者密码不正确");
         }
-        return null;
+        return user;
     }
+
+
+
+
+
+
+
 }

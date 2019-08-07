@@ -36,15 +36,15 @@
     <form id="loginForm" action="${PATH_PATH}/doLogin.do" method="post" class="form-signin" role="form">
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2>
         <div class="form-group has-success has-feedback">
-            <input type="text" class="form-control" id="inputSuccess4" name="loginacct" placeholder="请输入登录账号" autofocus>
+            <input type="text" class="form-control" id="floginacct" name="loginacct" placeholder="请输入登录账号" autofocus>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <input type="password" class="form-control" id="inputSuccess4" name="userpswd" placeholder="请输入登录密码" style="margin-top:10px;">
+            <input type="password" class="form-control" id="fuserpswd" name="userpswd" placeholder="请输入登录密码" style="margin-top:10px;">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <select class="form-control" name="type">
+            <select  id="ftype" class="form-control" name="type">
                 <option value="member">会员</option>
                 <option value="user">管理</option>
             </select>
@@ -68,7 +68,49 @@
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
 <script>
     function dologin() {
-        $("#loginForm").submit();
+
+        var floginacct=$("#floginacct");
+        var fuserpswd=$("#fuserpswd");
+        var ftype=$("#ftype");
+
+        if ($.trim(floginacct.val())== ""){
+            alert("用户名不能为空,请重新输入");
+            floginacct.val("");
+            fuserpswd.val("");
+            floginacct.focus();
+            return false;
+        }
+        if ($.trim(fuserpswd.val())== ""){
+            alert("密码不能为空,请重新输入");
+            fuserpswd.val("");
+            fuserpswd.focus();
+            return false;
+        }
+
+        //异步请求
+        $.ajax({
+            type : "POST",
+            url : "${APP_PATH}/doLogin.do",
+            data : {
+                "loginacct" : floginacct.val(),
+                "userpswd" : fuserpswd.val(),
+                "type" : ftype.val()
+            },
+            beforeSend : function () {
+                return true;
+            },
+            success : function (result) {
+                if (result.success){
+                    window.location.href="${APP_PATH}/main.htm";
+                }else {
+                    alert("not ok");
+                }
+            },
+            error : function () {
+                alert("error");
+            }
+        });
+//  同步请求 $("#loginForm").submit();
 //        var type = $(":selected").val();
 //        if ( type == "user" ) {
 //            window.location.href = "main.html";
