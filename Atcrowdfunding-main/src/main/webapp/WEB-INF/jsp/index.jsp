@@ -152,7 +152,7 @@ h3.break>a {
 
     <!-- Marketing messaging and featurettes
     ================================================== -->
-    <!-- Wrap the rest of the page in another container to center all the content. -->
+    <!-- Wrap the rest of the Page in another container to center all the content. -->
 
     <div class="container marketing">
 

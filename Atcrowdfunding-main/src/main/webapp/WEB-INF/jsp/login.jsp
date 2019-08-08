@@ -66,24 +66,29 @@
 </div>
 <script src="${APP_PATH}/jquery/jquery-2.1.1.min.js"></script>
 <script src="${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="${APP_PATH}/jquery/layer/layer.js"></script>
 <script>
     function dologin() {
 
         var floginacct=$("#floginacct");
         var fuserpswd=$("#fuserpswd");
         var ftype=$("#ftype");
+        var loadingIndex = -1 ;
+
 
         if ($.trim(floginacct.val())== ""){
-            alert("用户名不能为空,请重新输入");
-            floginacct.val("");
-            fuserpswd.val("");
-            floginacct.focus();
+            layer.msg("用户账号不能为空,请重新输入!", {time:1000, icon:5, shift:6}, function(){
+                floginacct.val("");
+                fuserpswd.val("");
+                floginacct.focus();
+            });
             return false;
         }
         if ($.trim(fuserpswd.val())== ""){
-            alert("密码不能为空,请重新输入");
-            fuserpswd.val("");
-            fuserpswd.focus();
+            layer.msg("用户密码不能为空,请重新输入!", {time:1000, icon:5, shift:6}, function(){
+                fuserpswd.val("");
+                fuserpswd.focus();
+            });
             return false;
         }
 
@@ -97,17 +102,19 @@
                 "type" : ftype.val()
             },
             beforeSend : function () {
+                loadingIndex = layer.msg('处理中', {icon: 16});
                 return true;
             },
             success : function (result) {
+                layer.close(loadingIndex);
                 if (result.success){
                     window.location.href="${APP_PATH}/main.htm";
                 }else {
-                    alert("not ok");
+                    layer.msg(result.message, {time:1000, icon:5, shift:6});
                 }
             },
             error : function () {
-                alert("error");
+                layer.msg("登录失败!", {time:1000, icon:5, shift:6});
             }
         });
 //  同步请求 $("#loginForm").submit();

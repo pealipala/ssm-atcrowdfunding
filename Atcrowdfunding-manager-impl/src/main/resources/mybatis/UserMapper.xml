@@ -58,4 +58,38 @@
 		username, email, createtime
 		from t_user where loginacct=#{loginacct} and userpswd=#{userpswd}
 	</select>
+
+	<!--<select id="queryUserPage"  resultMap="BaseResultMap">-->
+		<!--select id, loginacct, userpswd,-->
+		<!--username, email, createtime-->
+		<!--from t_user limit #{startIndex},#{pagesize}-->
+	<!--</select>-->
+
+	<!--<select id="queryUserCount"  resultType="Integer">-->
+		<!--select count(*)-->
+		<!--from t_user-->
+	<!--</select>-->
+
+	<select id="queryUserPage"  resultMap="BaseResultMap">
+		select id, loginacct, userpswd,
+		username, email, createtime
+		from t_user
+		<where>
+			<if test="queryText!=null">
+				loginacct LIKE concat("%",#{queryText},"%")
+			</if>
+		</where>
+		limit #{startIndex},#{pagesize}
+	</select>
+
+	<select id="queryUserCount"  resultType="Integer">
+		select count(*)
+		from t_user
+		<where>
+			<if test="queryText!=null">
+				loginacct LIKE concat("%",#{queryText},"%")
+			</if>
+		</where>
+	</select>
+
 </mapper>

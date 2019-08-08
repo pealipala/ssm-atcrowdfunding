@@ -46,7 +46,7 @@
                 <%-- JSP注释:注释的内容不参与编译,不会生成到源码中. --%>
 
                 <!-- 动态包含:被包含的页面也会独立编译,生成字节码文件. -->
-                <%-- <jsp:include page="/WEB-INF/jsp/common/top.jsp"></jsp:include> --%>
+                <%-- <jsp:include Page="/WEB-INF/jsp/common/top.jsp"></jsp:include> --%>
                 <!-- 静态包含:被包含的页面不会生成独立字节码文件.
                             将所包含的页面内容加入到当前页面,一起进行编译.
                  -->
@@ -70,7 +70,7 @@
                         <span><i class="glyphicon glyphicon glyphicon-tasks"></i> 权限管理 <span class="badge" style="float:right">3</span></span>
                         <ul style="margin-top:10px;display:none;">
                             <li style="height:30px;">
-                                <a href="user.html"><i class="glyphicon glyphicon-user"></i> 用户维护</a>
+                                <a href="${APP_PATH }/user/toIndex.do"><i class="glyphicon glyphicon-user"></i> 用户维护</a>
                             </li>
                             <li style="height:30px;">
                                 <a href="role.html"><i class="glyphicon glyphicon-king"></i> 角色维护</a>
