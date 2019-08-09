@@ -4,10 +4,14 @@ import com.pealipala.bean.User;
 import com.pealipala.exception.LoginFailException;
 import com.pealipala.manager.dao.UserMapper;
 import com.pealipala.manager.service.UserService;
+import com.pealipala.utils.Const;
+import com.pealipala.utils.MD5Util;
 import com.pealipala.utils.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +40,11 @@ public class UserServiceImpl implements UserService {
 //    }
 
     public int saveUser(User user) {
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String createtime = simpleDateFormat.format(date);
+        user.setCreatetime(createtime);
+        user.setUserpswd(MD5Util.digest(Const.LOGIN_PASSWORD));
         return userMapper.insert(user);
     }
 
@@ -51,6 +60,36 @@ public class UserServiceImpl implements UserService {
         page.setDatas(list);
         page.setTotalsize(total);
         return page;
+    }
+
+    public User queryUserById(Integer id) {
+        return userMapper.selectByPrimaryKey(id);
+    }
+
+    public int upDateUser(User user) {
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+        String createtime = simpleDateFormat.format(date);
+        user.setCreatetime(createtime);
+        User select = userMapper.selectByPrimaryKey(user.getId());
+        user.setUserpswd(select.getUserpswd());
+        return userMapper.updateByPrimaryKey(user);
+    }
+
+    public int deleteUser(Integer id) {
+        return userMapper.deleteByPrimaryKey(id);
+    }
+
+    public int deleteUserBatch(Integer[] ids) {
+        int deleteCount=0;
+        for (Integer id:ids) {
+            int count = userMapper.deleteByPrimaryKey(id);
+            deleteCount+=count;
+        }
+        if (deleteCount!=ids.length){
+            throw new RuntimeException("批量删除失败");
+        }
+        return deleteCount;
     }
 
 

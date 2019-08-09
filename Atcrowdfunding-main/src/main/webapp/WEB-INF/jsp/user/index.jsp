@@ -46,7 +46,7 @@
                             <li><a href="#"><i class="glyphicon glyphicon-cog"></i> 个人设置</a></li>
                             <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 消息</a></li>
                             <li class="divider"></li>
-                            <li><a href="index.html"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
+                            <li><a href="${APP_PATH }/logOut.do"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
                         </ul>
                     </div>
                 </li>
@@ -146,8 +146,8 @@
                         </div>
                         <button id="queryBtn" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
                     </form>
-                    <button type="button" class="btn btn-danger" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
-                    <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='add.html'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
+                    <button type="button" class="btn btn-danger" id="deleteBatchBtn" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
+                    <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='${APP_PATH}/user/toAdd.htm'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
                     <br>
                     <hr style="clear:both;">
                     <div class="table-responsive">
@@ -155,7 +155,7 @@
                             <thead>
                             <tr >
                                 <th width="30">#</th>
-                                <th width="30"><input type="checkbox"></th>
+                                <th width="30"><input id="allCheckbox" type="checkbox"></th>
                                 <th>账号</th>
                                 <th>名称</th>
                                 <th>邮箱地址</th>
@@ -239,14 +239,14 @@
                     $.each(data,function(i,n){
                         content+='<tr>';
                         content+='  <td>'+(i+1)+'</td>';
-                        content+='  <td><input type="checkbox"></td>';
+                        content+='  <td><input type="checkbox" id="'+n.id+'"></td>';
                         content+='  <td>'+n.loginacct+'</td>';
                         content+='  <td>'+n.username+'</td>';
                         content+='  <td>'+n.email+'</td>';
                         content+='  <td>';
                         content+='	  <button type="button" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>';
-                        content+='	  <button type="button" class="btn btn-primary btn-xs"><i class=" glyphicon glyphicon-pencil"></i></button>';
-                        content+='	  <button type="button" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>';
+                        content+='	  <button type="button" onclick="window.location.href=\'${APP_PATH}/user/toUpdate.htm?id='+n.id+'\'" class="btn btn-primary btn-xs"><i class=" glyphicon glyphicon-pencil"></i></button>';
+                        content+='	  <button type="button" onclick="deleteUser('+n.id+',\''+n.username+'\')" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>';
                         content+='  </td>';
                         content+='</tr>';
                     });
@@ -287,11 +287,89 @@
             }
         });
     }
+
     $("#queryBtn").click(function(){
         var queryText = $("#queryText").val();
         jsonObj.queryText = queryText ;
         queryPageUser(1);
     });
+
+    function deleteUser(id,username) {
+        layer.confirm("确认要删除["+username+"]用户吗?",{icon: 3, title:'提示'},function (cindex) {
+            layer.close(cindex);
+            $.ajax({
+                type : "POST",
+                data : {
+                    "id" : id
+                },
+                url : "${APP_PATH}/user/doDelete.do",
+                beforeSend : function() {
+                    return true ;
+                },
+                success : function(result){
+                    if(result.success){
+                        window.location.href="${APP_PATH}/user/toIndex.htm";
+                    }else{
+                        layer.msg(result.message, {time:1000, icon:5, shift:6});
+                    }
+                },
+                error : function(){
+                    layer.msg("删除失败", {time:1000, icon:5, shift:6});
+                }
+            });
+        }),function (cindex) {
+            layer.close(cindex);
+        }
+    }
+
+    $("#allCheckbox").click(function(){
+        var checkedStatus = this.checked ;
+        //alert(checkedStatus);
+
+        $("tbody tr td input[type='checkbox']").prop("checked",checkedStatus);
+
+    });
+    
+    $("#deleteBatchBtn").click(function () {
+        var selectCheckBox = $("tbody tr td input:checked");
+        if(selectCheckBox.length==0){
+            layer.msg("至少选择一个用户进行删除!请选择用户!", {time:1000, icon:5, shift:6});
+            return false ;
+        }
+        var idStr="";
+        $.each(selectCheckBox,function (i,n) {
+            //id=1&id=2
+            if (i!=0){
+                idStr+="&";
+            }
+            idStr+="id="+n.id;
+        })
+        alert(idStr);
+        layer.confirm("确认要删除选中的用户吗?",{icon: 3, title:'提示'},function (cindex) {
+            layer.close(cindex);
+            $.ajax({
+                type : "POST",
+                data : idStr,
+                url : "${APP_PATH}/user/doDeleteBatch.do",
+                beforeSend : function() {
+                    return true ;
+                },
+                success : function(result){
+                    if(result.success){
+                        window.location.href="${APP_PATH}/user/toIndex.htm";
+                    }else{
+                        layer.msg(result.message, {time:1000, icon:5, shift:6});
+                    }
+                },
+                error : function(){
+                    layer.msg("删除失败", {time:1000, icon:5, shift:6});
+                }
+            });
+        }),function (cindex) {
+            layer.close(cindex);
+        }
+
+    })
 </script>
 </body>
 </html>

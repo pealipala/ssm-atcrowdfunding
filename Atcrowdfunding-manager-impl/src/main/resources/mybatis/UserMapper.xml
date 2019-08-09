@@ -16,7 +16,7 @@
 		delete from t_user
 		where id = #{id,jdbcType=INTEGER}
 	</delete>
-	<insert id="insert" parameterType="com.pealipala.bean.User">
+	<insert id="insert" parameterType="com.pealipala.bean.User" keyProperty="id" useGeneratedKeys="true">
 		insert into t_user (id,
 		loginacct, userpswd,
 		username, email, createtime
@@ -79,6 +79,7 @@
 				loginacct LIKE concat("%",#{queryText},"%")
 			</if>
 		</where>
+		order by createtime desc
 		limit #{startIndex},#{pagesize}
 	</select>
 
