@@ -2,6 +2,7 @@ package com.pealipala.manager.service;
 
 import com.pealipala.bean.User;
 import com.pealipala.utils.Page;
+import com.pealipala.vo.Data;
 
 
 import java.util.Map;
@@ -22,4 +23,6 @@ public interface UserService {
     int deleteUser(Integer id);
 
     int deleteUserBatch(Integer[] ids);
+
+    int deleteUserBatchByVO(Data datas);
 }

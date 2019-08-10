@@ -6,6 +6,7 @@ import com.pealipala.utils.AjaxResult;
 import com.pealipala.utils.Const;
 import com.pealipala.utils.Page;
 import com.pealipala.utils.StringUtil;
+import com.pealipala.vo.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -24,8 +26,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/toIndex")
-    public String toIndex(){
+    @RequestMapping("/index")
+    public String index(){
         return "user/index";
     }
 
@@ -50,8 +52,8 @@ public class UserController {
      * @return : java.lang.String
      */
     @ResponseBody
-    @RequestMapping("/index")
-    public Object index(@RequestParam(value="pageno",required=false,defaultValue="1") Integer pageno,
+    @RequestMapping("/doIndex")
+    public Object doIndex(@RequestParam(value="pageno",required=false,defaultValue="1") Integer pageno,
                         @RequestParam(value="pagesize",required=false,defaultValue="10") Integer pagesize,
                         String queryText){
 
@@ -156,7 +158,7 @@ public class UserController {
             Integer sessionUserId = sessionUser.getId();
             if (id.equals(sessionUserId)){
                 result.setSuccess(false);
-                result.setMessage("不可删除当前用户");
+                result.setMessage("不可删除当前登录用户");
                 return result;
             }
             int count = userService.deleteUser(id);
@@ -170,30 +172,55 @@ public class UserController {
     }
 
 
-    /**
-     * 异步请求 --- 批量删除用户
-     * @author : yechaoze
-     * @date : 2019/8/9 15:16
-     * @param id :
-     * @return : java.lang.Object
-     */
+//    /**
+//     * 异步请求 --- 批量删除用户
+//     * @author : yechaoze
+//     * @date : 2019/8/9 15:16
+//     * @param id :
+//     * @return : java.lang.Object
+//     */
+//    @ResponseBody
+//    @RequestMapping("/doDeleteBatch")
+//    public Object doDeleteBatch(Integer[] id,HttpSession session){
+//
+//        AjaxResult result=new AjaxResult();
+//        try {
+//            User sessionUser = (User) session.getAttribute(Const.LOGIN_USER);
+//            Integer sessionUserId = sessionUser.getId();
+//            for (Integer selectid:id) {
+//                if (selectid.equals(sessionUserId)){
+//                    result.setSuccess(false);
+//                    result.setMessage("不可删除当前登录用户");
+//                    return result;
+//                }
+//            }
+//            int count = userService.deleteUserBatch(id);
+//            result.setSuccess(count==id.length);
+//        } catch (Exception e) {
+//            result.setSuccess(false);
+//            e.printStackTrace();
+//            result.setMessage("删除用户失败");
+//        }
+//        return result;
+//    }
     @ResponseBody
     @RequestMapping("/doDeleteBatch")
-    public Object doDeleteBatch(Integer[] id,HttpSession session){
+    public Object doDeleteBatch(Data data, HttpSession session){
 
         AjaxResult result=new AjaxResult();
         try {
             User sessionUser = (User) session.getAttribute(Const.LOGIN_USER);
             Integer sessionUserId = sessionUser.getId();
-            for (Integer selectid:id) {
-                if (selectid.equals(sessionUserId)){
+            List<User> userList = data.getDatas();
+            for (User list:userList) {
+                if (list.getId().equals(sessionUserId)){
                     result.setSuccess(false);
-                    result.setMessage("不可删除当前用户");
+                    result.setMessage("不可删除当前登录用户");
                     return result;
                 }
             }
-            int count = userService.deleteUserBatch(id);
-            result.setSuccess(count==id.length);
+            int count = userService.deleteUserBatchByVO(data);
+            result.setSuccess(count==data.getDatas().size());
         } catch (Exception e) {
             result.setSuccess(false);
             e.printStackTrace();

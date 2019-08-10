@@ -7,6 +7,7 @@ import com.pealipala.manager.service.UserService;
 import com.pealipala.utils.Const;
 import com.pealipala.utils.MD5Util;
 import com.pealipala.utils.Page;
+import com.pealipala.vo.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,6 +91,10 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("批量删除失败");
         }
         return deleteCount;
+    }
+
+    public int deleteUserBatchByVO(Data datas) {
+        return userMapper.deleteUserBatchByVO(datas);
     }
 
 

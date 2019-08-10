@@ -93,4 +93,13 @@
 		</where>
 	</select>
 
+	<delete id="deleteUserBatchByVO">
+		delete from t_user
+		where id  in
+		<foreach collection="datas" open="(" close=")" separator="," item="user">
+			#{user.id}
+		</foreach>
+	</delete>
+
+
 </mapper>

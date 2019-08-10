@@ -1,6 +1,7 @@
 package com.pealipala.manager.dao;
 
 import com.pealipala.bean.User;
+import com.pealipala.vo.Data;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public interface UserMapper {
     List<User> queryUserPage(Map paramMap);
 
     Integer queryUserCount(Map paramMap);
+
+    int deleteUserBatchByVO(Data datas);
 
 //    List<User> queryUserPage(@Param("startIndex")Integer startIndex,@Param("pagesize") Integer pagesize);
 //
