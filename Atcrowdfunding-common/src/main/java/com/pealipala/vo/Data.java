@@ -8,4 +8,5 @@ import java.util.List;
 @lombok.Data
 public class Data {
     private List<User> datas=new ArrayList<User>();
+    private List<Integer> ids;
 }

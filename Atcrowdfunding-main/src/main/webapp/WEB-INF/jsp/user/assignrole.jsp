@@ -1,14 +1,15 @@
 <%--
   Created by IntelliJ IDEA.
   User: 叶朝泽
-  Date: 2019/8/9
-  Time: 12:38
+  Date: 2019/8/11
+  Time: 11:36
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="zh-CN">
 <head>
-    <meta charset="GB18030">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -31,7 +32,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <div><a class="navbar-brand" style="font-size:32px;" href="${APP_PATH}/user/toIndex.do">众筹平台 - 用户维护</a></div>
+            <div><a class="navbar-brand" style="font-size:32px;" href="user.html">众筹平台 - 用户维护</a></div>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -62,27 +63,34 @@
             <ol class="breadcrumb">
                 <li><a href="#">首页</a></li>
                 <li><a href="#">数据列表</a></li>
-                <li class="active">修改</li>
+                <li class="active">分配角色</li>
             </ol>
             <div class="panel panel-default">
-                <div class="panel-heading">表单数据<div style="float:right;cursor:pointer;" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-question-sign"></i></div></div>
                 <div class="panel-body">
-                    <form id="updateForm" role="form">
+                    <form role="form" class="form-inline">
                         <div class="form-group">
-                            <label for="floginacct">登陆账号</label>
-                            <input type="text" class="form-control" id="floginacct" value="${user.loginacct}">
+                            <label for="exampleInputPassword1">未分配角色列表</label><br>
+                            <select id="leftRoleList" class="form-control" multiple size="10" style="width:250px;overflow-y:auto;">
+                                <c:forEach items="${leftRole}" var="left">
+                                    <option value="${left.id}">${left.name}</option>
+                                </c:forEach>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="fusername">用户名称</label>
-                            <input type="text" class="form-control" id="fusername" value="${user.username}">
+                            <ul>
+                                <li id="leftToRightBtn" class="btn btn-default glyphicon glyphicon-chevron-right"></li>
+                                <br>
+                                <li id="rightToLeftBtn" class="btn btn-default glyphicon glyphicon-chevron-left" style="margin-top:20px;"></li>
+                            </ul>
                         </div>
-                        <div class="form-group">
-                            <label for="femail">邮箱地址</label>
-                            <input type="email" class="form-control" id="femail" value="${user.email }">
-                            <p class="help-block label label-warning">请输入合法的邮箱地址, 格式为： xxxx@xxxx.com</p>
+                        <div class="form-group" style="margin-left:40px;">
+                            <label for="exampleInputPassword1">已分配角色列表</label><br>
+                            <select id="rightRoleList" class="form-control" multiple size="10" style="width:250px;overflow-y:auto;">
+                                <c:forEach items="${rightRole}" var="right">
+                                    <option value="${right.id}">${right.name}</option>
+                                </c:forEach>
+                            </select>
                         </div>
-                        <button id="updateBtn" type="button" class="btn btn-success"><i class="glyphicon glyphicon-edit"></i> 修改</button>
-                        <button id="resetBtn"  type="button" class="btn btn-danger"><i class="glyphicon glyphicon-refresh"></i> 重置</button>
                     </form>
                 </div>
             </div>
@@ -132,38 +140,74 @@
             }
         });
     });
+    //分配角色
+    $("#leftToRightBtn").click(function () {
+        var selectOptions=$("#leftRoleList option:selected");
 
-    $("#updateBtn").click(function () {
-        var floginacct = $("#floginacct");
-        var fusername = $("#fusername");
-        var femail = $("#femail");
+
+        var jsonObj={
+            userid  : "${param.id}"
+        }
+
+        $.each(selectOptions,function (i,n) {
+           jsonObj["ids["+i+"]"]=this.value;
+        });
+        var index = -1 ;
         $.ajax({
-            type : "POST",
-            data : {
-                "loginacct" : floginacct.val(),
-                "username" : fusername.val(),
-                "email" : femail.val(),
-                "id" : "${user.id}"
-            },
-            url : "${APP_PATH}/user/doUpdate.do",
+            type :  "POST",
+            url : "${APP_PATH}/user/doAssignRole.do",
+            data : jsonObj,
             beforeSend : function () {
+                index = layer.load(2, {time: 500});
                 return true;
             },
             success : function (result) {
-                if (result.success){
-                    window.location.href="${APP_PATH}/user/index.htm";
+                layer.close(index);
+                if(result.success){
+                    $("#rightRoleList").append(selectOptions.clone());
+                    selectOptions.remove();
                 }else{
                     layer.msg(result.message, {time:1000, icon:5, shift:6});
                 }
             },
             error : function () {
-                layer.msg("修改用户失败", {time:1000, icon:5, shift:6});
+                layer.msg("操作失败!", {time:1000, icon:5, shift:6});
             }
-        });
+        })
+        
     });
 
-    $("#resetBtn").click(function(){
-        $("#updateForm")[0].reset();
+    //取消角色
+    $("#rightToLeftBtn").click(function () {
+        var selectOptions=$("#rightRoleList option:selected");
+
+        var index = -1;
+        var jsonObj={
+            userid : ${param.id}
+        };
+        $.each(selectOptions,function (i,n) {
+            jsonObj["ids["+i+"]"]=this.value;
+        });
+        $.ajax({
+            type : "POST",
+            url  : "${APP_PATH}/user/doUnAssignRole.do",
+            data : jsonObj,
+            beforeSend : function () {
+                index=layer.load(2, {time: 500});
+                return true;
+            },
+            success : function (result) {
+                if (result.success){
+                    $("#leftRoleList").append(selectOptions.clone());
+                    selectOptions.remove();
+                }else {
+                    layer.msg(result.message, {time:1000, icon:5, shift:6});
+                }
+            },
+            error : function () {
+                layer.msg("操作失败!", {time:1000, icon:5, shift:6});
+            }
+        });
     });
 </script>
 </body>

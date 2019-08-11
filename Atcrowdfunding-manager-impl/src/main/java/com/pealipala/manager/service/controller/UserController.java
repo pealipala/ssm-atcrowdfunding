@@ -1,5 +1,6 @@
 package com.pealipala.manager.service.controller;
 
+import com.pealipala.bean.Role;
 import com.pealipala.bean.User;
 import com.pealipala.manager.service.UserService;
 import com.pealipala.utils.AjaxResult;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,33 @@ public class UserController {
         User user=userService.queryUserById(id);
         map.put("user",user);
         return "user/update";
+    }
+
+    /**
+     * 显示用户已经分配的角色
+     * @author : yechaoze
+     * @date : 2019/8/11 13:45
+     * @param id :
+     * @param paramMap :
+     * @return : java.lang.String
+     */
+    @RequestMapping("/assignRole")
+    public String assignRole(Integer id,Map paramMap){
+        List<Role> allRole=userService.queryAllRole();//全部的权限
+        List<Integer> userRole=userService.queryRoleByUserId(id);//拥有的权限
+        List leftRole=new ArrayList();//左侧权限 未拥有
+        List rightRole=new ArrayList();//右侧权限 已拥有
+        for (Role list:allRole) {
+            if (userRole.contains(list.getId())){
+                rightRole.add(list);
+            }else {
+                leftRole.add(list);
+            }
+        }
+        paramMap.put("leftRole",leftRole);
+        paramMap.put("rightRole",rightRole);
+
+        return "user/assignrole";
     }
 
     /**
@@ -225,6 +254,54 @@ public class UserController {
             result.setSuccess(false);
             e.printStackTrace();
             result.setMessage("删除用户失败");
+        }
+        return result;
+    }
+
+    /**
+     * 异步请求 --- 用户角色添加
+     * @author : yechaoze
+     * @date : 2019/8/11 15:23
+     * @param userid :
+     * @param data :
+     * @return : java.lang.Object
+     */
+    @ResponseBody
+    @RequestMapping("/doAssignRole")
+    public Object doAssignRole(Integer userid,Data data){
+
+        AjaxResult result=new AjaxResult();
+        try {
+            userService.saveUserRoleRelationship(userid,data);
+            result.setSuccess(true);
+        } catch (Exception e) {
+            result.setSuccess(false);
+            e.printStackTrace();
+            result.setMessage("添加用户角色失败");
+        }
+        return result;
+    }
+
+    /**
+     * 异步请求 --- 用户角色删除
+     * @author : yechaoze
+     * @date : 2019/8/11 15:27
+     * @param userid :
+     * @param data :
+     * @return : java.lang.Object
+     */
+    @ResponseBody
+    @RequestMapping("/doUnAssignRole")
+    public Object unAssignRole(Integer userid,Data data){
+
+        AjaxResult result=new AjaxResult();
+        try {
+            userService.deleteUserRoleRelationship(userid,data);
+            result.setSuccess(true);
+        } catch (Exception e) {
+            result.setSuccess(false);
+            e.printStackTrace();
+            result.setMessage("删除用户角色失败");
         }
         return result;
     }

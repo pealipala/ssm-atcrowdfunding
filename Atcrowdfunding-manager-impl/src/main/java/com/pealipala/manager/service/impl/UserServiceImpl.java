@@ -1,5 +1,6 @@
 package com.pealipala.manager.service.impl;
 
+import com.pealipala.bean.Role;
 import com.pealipala.bean.User;
 import com.pealipala.exception.LoginFailException;
 import com.pealipala.manager.dao.UserMapper;
@@ -95,6 +96,22 @@ public class UserServiceImpl implements UserService {
 
     public int deleteUserBatchByVO(Data datas) {
         return userMapper.deleteUserBatchByVO(datas);
+    }
+
+    public List<Role> queryAllRole() {
+        return userMapper.queryAllRole();
+    }
+
+    public List<Integer> queryRoleByUserId(Integer id) {
+        return userMapper.queryRoleByUserId(id);
+    }
+
+    public int saveUserRoleRelationship(Integer userid, Data data) {
+        return userMapper.saveUserRoleRelationship(userid,data);
+    }
+
+    public int deleteUserRoleRelationship(Integer userid, Data data) {
+        return userMapper.deleteUserRoleRelationship(userid,data);
     }
 
 

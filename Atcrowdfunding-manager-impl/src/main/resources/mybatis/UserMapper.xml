@@ -101,5 +101,25 @@
 		</foreach>
 	</delete>
 
+	<select id="queryAllRole" resultType="Role">
+		select id,name from t_role
+	</select>
+
+	<select id="queryRoleByUserId" parameterType="int" resultType="int">
+		select roleid from t_user_role where userid=#{id}
+	</select>
+
+	<insert id="saveUserRoleRelationship" >
+		<foreach collection="data.ids" item="roleid" separator=";">
+			insert into t_user_role(userid,roleid) values(#{userid},#{roleid})
+		</foreach>
+	</insert>
+
+	<delete id="deleteUserRoleRelationship">
+		delete from t_user_role where userid=#{userid} and roleid in
+		<foreach collection="data.ids" item="roleid" separator=";" open="(" close=")">
+			#{roleid}
+		</foreach>
+	</delete>
 
 </mapper>

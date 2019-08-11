@@ -1,10 +1,12 @@
 package com.pealipala.manager.service;
 
+import com.pealipala.bean.Role;
 import com.pealipala.bean.User;
 import com.pealipala.utils.Page;
 import com.pealipala.vo.Data;
 
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -25,4 +27,12 @@ public interface UserService {
     int deleteUserBatch(Integer[] ids);
 
     int deleteUserBatchByVO(Data datas);
+
+    List<Role> queryAllRole();
+
+    List<Integer> queryRoleByUserId(Integer id);
+
+    int saveUserRoleRelationship(Integer userid, Data data);
+
+    int deleteUserRoleRelationship(Integer userid, Data data);
 }
