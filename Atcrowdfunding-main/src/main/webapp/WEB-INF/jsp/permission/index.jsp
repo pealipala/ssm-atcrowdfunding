@@ -160,7 +160,7 @@
                 var zNodes = result.data ;
                 $.fn.zTree.init($("#treeDemo"), setting, zNodes);
             }else{
-                alert("加载数据失败...");
+                layer.msg(result.message, {time:1000, icon:5, shift:6});
             }
         }
 

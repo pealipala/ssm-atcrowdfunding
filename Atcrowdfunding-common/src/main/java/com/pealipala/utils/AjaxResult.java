@@ -7,4 +7,5 @@ public class AjaxResult {
     private boolean success;
     private String message;
     private Page page;
+    private Object data ;
 }

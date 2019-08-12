@@ -39,7 +39,7 @@ public class DispatcherController {
         return "main";
     }
 
-    @RequestMapping("/logOut")
+    @RequestMapping("/logout")
     public String logOut(HttpSession session){
         //销毁session对象
         session.invalidate();
