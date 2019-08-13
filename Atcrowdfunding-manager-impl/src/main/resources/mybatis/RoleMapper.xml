@@ -27,4 +27,30 @@
     select id, name
     from t_role
   </select>
+  <select id="queryRoleCount" resultType="int">
+    select count(*) from t_role
+    <where>
+      <if test="queryText!=null">
+        name like concat('%',#{queryText},'%')
+      </if>
+    </where>
+  </select>
+
+  <select id="pageQuery" resultType="Role">
+    select * from t_role
+    <where>
+      <if test="queryText!=null">
+        name like concat('%',#{queryText},'%')
+      </if>
+    </where>
+    limit #{startIndex}, #{pagesize}
+  </select>
+
+  <delete id="batchDeleteRole">
+    delete from t_role
+    where id  in
+    <foreach collection="datas" open="(" close=")" separator="," item="role">
+      #{role.id}
+    </foreach>
+  </delete>
 </mapper>

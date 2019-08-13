@@ -24,4 +24,20 @@ public class PermissionServiceImpl implements PermissionService{
     public List<Permission> queryAllPermission() {
         return permissionMapper.queryAllPermission();
     }
+
+    public int savePermission(Permission permission) {
+        return permissionMapper.insert(permission);
+    }
+
+    public Permission getPermissionById(Integer id) {
+        return permissionMapper.selectByPrimaryKey(id);
+    }
+
+    public int updatePermission(Permission permission) {
+        return permissionMapper.updateByPrimaryKey(permission);
+    }
+
+    public int deletePermissionById(Integer id) {
+        return permissionMapper.deleteByPrimaryKey(id);
+    }
 }

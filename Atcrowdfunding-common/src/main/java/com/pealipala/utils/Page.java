@@ -2,10 +2,11 @@ package com.pealipala.utils;
 
 import java.util.List;
 
-public class Page {
+public class Page<T> {
+
     private Integer pageno;
     private Integer pagesize;
-    private List datas;
+    private List<T> data;
     private Integer totalsize;
     private Integer totalno;
 
@@ -38,12 +39,12 @@ public class Page {
         this.pagesize = pagesize;
     }
 
-    public List getDatas() {
-        return datas;
+    public List getData() {
+        return data;
     }
 
-    public void setDatas(List datas) {
-        this.datas = datas;
+    public void setData(List data) {
+        this.data = data;
     }
 
     public Integer getTotalsize() {
@@ -66,4 +67,5 @@ public class Page {
     public Integer getStartIndex() {
         return (this.pageno - 1) * pagesize;
     }
+
 }

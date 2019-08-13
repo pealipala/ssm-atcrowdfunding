@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -38,7 +39,17 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li style="padding-top:8px;">
-                    <jsp:include page="/WEB-INF/jsp/common/userinfo.jsp"></jsp:include>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-success dropdown-toggle" data-toggle="dropdown">
+                            <i class="glyphicon glyphicon-user"></i> ${sessionScope.user.username } <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#"><i class="glyphicon glyphicon-cog"></i> 个人设置</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-comment"></i> 消息</a></li>
+                            <li class="divider"></li>
+                            <li><a href="index.html"><i class="glyphicon glyphicon-off"></i> 退出系统</a></li>
+                        </ul>
+                    </div>
                 </li>
                 <li style="margin-left:10px;padding-top:8px;">
                     <button type="button" class="btn btn-default btn-danger">
@@ -75,14 +86,14 @@
                         </div>
                         <button id="queryBtn" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
                     </form>
-                    <button type="button" class="btn btn-danger" id="deleteBatchBtn" style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
+                    <button type="button" class="btn btn-danger" id="deleteBatchBtn"  style="float:right;margin-left:10px;"><i class=" glyphicon glyphicon-remove"></i> 删除</button>
                     <button type="button" class="btn btn-primary" style="float:right;" onclick="window.location.href='${APP_PATH}/user/toAdd.htm'"><i class="glyphicon glyphicon-plus"></i> 新增</button>
                     <br>
                     <hr style="clear:both;">
                     <div class="table-responsive">
                         <table class="table  table-bordered">
                             <thead>
-                            <tr >
+                            <tr>
                                 <th width="30">#</th>
                                 <th width="30"><input id="allCheckbox" type="checkbox"></th>
                                 <th>账号</th>
@@ -116,6 +127,7 @@
 <script src="${APP_PATH }/bootstrap/js/bootstrap.min.js"></script>
 <script src="${APP_PATH }/script/docs.min.js"></script>
 <script type="text/javascript" src="${APP_PATH }/jquery/layer/layer.js"></script>
+
 <script type="text/javascript">
     $(function () {
         $(".list-group-item").click(function(){
@@ -129,7 +141,14 @@
             }
         });
         queryPageUser(1);
+//        showMenu();
     });
+
+
+
+
+
+
     $("tbody .btn-success").click(function(){
         window.location.href = "assignRole.html";
     });
@@ -142,17 +161,21 @@
         //window.location.href="${APP_PATH}/user/index.do?pageno="+pageno ;
         queryPageUser(pageno);
     }
-    var loadingIndex = -1 ;
+
+
     var jsonObj = {
         "pageno" : 1,
         "pagesize" : 10
     };
-    function queryPageUser(pageno) {
-        jsonObj.pageno=pageno;
+
+
+    var loadingIndex = -1 ;
+    function queryPageUser(pageno){
+        jsonObj.pageno = pageno ;
         $.ajax({
             type : "POST",
-            url : "${APP_PATH}/user/doIndex.do",
             data : jsonObj,
+            url : "${APP_PATH}/user/doIndex.do",
             beforeSend : function(){
                 loadingIndex = layer.load(2, {time: 10*1000});
                 return true ;
@@ -161,21 +184,21 @@
                 layer.close(loadingIndex);
                 if(result.success){
                     var page = result.page ;
-                    var data = page.datas ;
+                    var data = page.data ;
 
                     var content = '';
 
                     $.each(data,function(i,n){
                         content+='<tr>';
                         content+='  <td>'+(i+1)+'</td>';
-                        content+='  <td><input type="checkbox" id="'+n.id+'" name="'+n.username+'"></td>';
+                        content+='  <td><input type="checkbox" id="'+n.id+'" name="'+n.loginacct+'"></td>';
                         content+='  <td>'+n.loginacct+'</td>';
                         content+='  <td>'+n.username+'</td>';
                         content+='  <td>'+n.email+'</td>';
                         content+='  <td>';
                         content+='	  <button type="button" onclick="window.location.href=\'${APP_PATH}/user/assignRole.htm?id='+n.id+'\'" class="btn btn-success btn-xs"><i class=" glyphicon glyphicon-check"></i></button>';
                         content+='	  <button type="button" onclick="window.location.href=\'${APP_PATH}/user/toUpdate.htm?id='+n.id+'\'" class="btn btn-primary btn-xs"><i class=" glyphicon glyphicon-pencil"></i></button>';
-                        content+='	  <button type="button" onclick="deleteUser('+n.id+',\''+n.username+'\')" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>';
+                        content+='	  <button type="button" onclick="deleteUser('+n.id+',\''+n.loginacct+'\')" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></button>';
                         content+='  </td>';
                         content+='</tr>';
                     });
@@ -217,14 +240,18 @@
         });
     }
 
+
+
     $("#queryBtn").click(function(){
         var queryText = $("#queryText").val();
         jsonObj.queryText = queryText ;
         queryPageUser(1);
     });
 
-    function deleteUser(id,username) {
-        layer.confirm("确认要删除["+username+"]用户吗?",{icon: 3, title:'提示'},function (cindex) {
+
+    function deleteUser(id,loginacct){
+
+        layer.confirm("确认要删除["+loginacct+"]用户吗?",  {icon: 3, title:'提示'}, function(cindex){
             layer.close(cindex);
             $.ajax({
                 type : "POST",
@@ -237,48 +264,82 @@
                 },
                 success : function(result){
                     if(result.success){
-                        window.location.href="${APP_PATH}/user/index.htm";
+                        window.location.href="${APP_PATH}/user/toIndex.htm";
                     }else{
-                        layer.msg(result.message, {time:1000, icon:5, shift:6});
+                        layer.msg("删除用户失败", {time:1000, icon:5, shift:6});
                     }
                 },
                 error : function(){
                     layer.msg("删除失败", {time:1000, icon:5, shift:6});
                 }
             });
-        }),function (cindex) {
+        }, function(cindex){
             layer.close(cindex);
-        }
+        });
+
     }
+
 
     $("#allCheckbox").click(function(){
         var checkedStatus = this.checked ;
         //alert(checkedStatus);
-
-//        $("tbody tr td input[type='checkbox']").prop("checked",checkedStatus);
-        var tbodyCheckBox = $("tbody tr td input[type='checkbox']");
-        $.each(tbodyCheckBox,function(i,n){
-            n.checked=checkedStatus;
+        //$("tbody tr td input[type='checkbox']").attr("checked",checkedStatus);
+        //$("tbody tr td input[type='checkbox']").prop("checked",checkedStatus);
+        var tbodyCheckbox = $("tbody tr td input[type='checkbox']");
+        $.each(tbodyCheckbox,function(i,n){
+            n.checked = checkedStatus;
         });
-
     });
-    
-    $("#deleteBatchBtn").click(function () {
-        var selectCheckBox = $("tbody tr td input:checked");
-        if(selectCheckBox.length==0){
+
+    //只能给当前页面存在的元素增加事件,后来的元素无法增加事件.
+    /* $("tbody tr td input[type='checkbox']").click(function(){
+        alert("888");
+    }); */
+
+    //给后来元素增加事件.
+    $("tbody").delegate(":checkbox","click",function(){
+        if($("tbody tr td input:checked").length==0){
+            $("#allCheckbox").attr("checked",false);
+        }else{
+            $("#allCheckbox").attr("checked",true);
+        }
+    });
+
+
+
+    $("#deleteBatchBtn").click(function(){
+
+        var selectCheckbox = $("tbody tr td input:checked");
+
+        if(selectCheckbox.length==0){
             layer.msg("至少选择一个用户进行删除!请选择用户!", {time:1000, icon:5, shift:6});
             return false ;
         }
+
+        /* var idStr = "";
+
+        $.each(selectCheckbox,function(i,n){
+            //  url?id=5&id=6&id=7
+            if(i!=0){
+                idStr += "&";
+            }
+            idStr += "id="+n.id;
+        });  */
+
+
         var jsonObj = {};
 
-        $.each(selectCheckBox,function(i,n){
+        $.each(selectCheckbox,function(i,n){
             jsonObj["datas["+i+"].id"] = n.id;
-            jsonObj["datas["+i+"].username"] = n.name;
+            jsonObj["datas["+i+"].loginacct"] = n.name;
         });
-        layer.confirm("确认要删除选中的用户吗?",{icon: 3, title:'提示'},function (cindex) {
+
+
+        layer.confirm("确认要删除这些用户吗?",  {icon: 3, title:'提示'}, function(cindex){
             layer.close(cindex);
             $.ajax({
                 type : "POST",
+                //data : idStr,
                 data : jsonObj,
                 url : "${APP_PATH}/user/doDeleteBatch.do",
                 beforeSend : function() {
@@ -286,20 +347,21 @@
                 },
                 success : function(result){
                     if(result.success){
-                        window.location.href="${APP_PATH}/user/index.htm";
+                        window.location.href="${APP_PATH}/user/toIndex.htm";
                     }else{
-                        layer.msg(result.message, {time:1000, icon:5, shift:6});
+                        layer.msg("删除用户失败", {time:1000, icon:5, shift:6});
                     }
                 },
                 error : function(){
                     layer.msg("删除失败", {time:1000, icon:5, shift:6});
                 }
             });
-        }),function (cindex) {
+        }, function(cindex){
             layer.close(cindex);
-        }
+        });
 
-    })
+    });
+
 </script>
 <script type="text/javascript" src="${APP_PATH }/script/menu.js"></script>
 </body>

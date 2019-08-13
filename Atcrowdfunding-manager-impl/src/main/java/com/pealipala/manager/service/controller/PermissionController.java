@@ -21,8 +21,20 @@ public class PermissionController {
     private PermissionService permissionService;
 
     @RequestMapping("/index")
-    public void index(){
-        return ;
+    public String index(){
+        return "permission/index";
+    }
+
+    @RequestMapping("/toAdd")
+    public String toAdd(){
+        return "permission/add";
+    }
+
+    @RequestMapping("/toUpdate")
+    public String toUpdate(Integer id,Map map){
+        Permission permission=permissionService.getPermissionById(id);
+        map.put("permission",permission);
+        return "permission/update";
     }
 
     //zTree demo1 数据写死
@@ -87,14 +99,14 @@ public class PermissionController {
 //        return result;
 //    }
 
-    private void queryPermissions(Permission permission){
-        List<Permission> child = permissionService.getChildByPid(permission.getId());
-        //组合父子关系
-        permission.setChildren(child);
-        for (Permission innerChild:child) {
-            queryPermissions(innerChild);
-        }
-    }
+//    private void queryPermissions(Permission permission){
+//        List<Permission> child = permissionService.getChildByPid(permission.getId());
+//        //组合父子关系
+//        permission.setChildren(child);
+//        for (Permission innerChild:child) {
+//            queryPermissions(innerChild);
+//        }
+//    }
 
     /**
      * demo4 -- 一次性加载全部数据 减少与数据库的交互次数
@@ -190,5 +202,64 @@ public class PermissionController {
 
 
         return result ;
+    }
+
+    /**
+     * 许可树添加节点
+     * @author : yechaoze
+     * @date : 2019/8/13 16:14
+     * @param permission :
+     * @return : java.lang.Object
+     */
+    @ResponseBody
+    @RequestMapping("/doAdd")
+    public Object doAdd(Permission permission){
+        AjaxResult result = new AjaxResult();
+        try {
+            int count = permissionService.savePermission(permission);
+            result.setSuccess(count==1);
+        } catch (Exception e) {
+            result.setSuccess(false);
+            e.printStackTrace();
+            result.setMessage("保存许可数据失败");
+        }
+        return result;
+    }
+
+    @ResponseBody
+    @RequestMapping("/doUpdate")
+    public Object doUpdate(Permission permission){
+        AjaxResult result = new AjaxResult();
+        try {
+            int count = permissionService.updatePermission(permission);
+            result.setSuccess(count==1);
+        } catch (Exception e) {
+            result.setSuccess(false);
+            e.printStackTrace();
+            result.setMessage("修改许可数据失败");
+        }
+        return result;
+    }
+
+    /**
+     * 删除许可树节点
+     * @author : yechaoze
+     * @date : 2019/8/13 16:47
+     * @param id :
+     * @return : java.lang.Object
+     */
+    @ResponseBody
+    @RequestMapping("/deletePermission")
+    public Object deletePermission(Integer id){
+        AjaxResult result = new AjaxResult();
+        try {
+            int count = permissionService.deletePermissionById(id);
+            result.setSuccess(count==1);
+        } catch (Exception e) {
+            result.setSuccess(false);
+            e.printStackTrace();
+            result.setMessage("删除许可数据失败");
+        }
+        return result;
     }
 }

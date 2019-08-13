@@ -7,7 +7,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -35,7 +34,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <div><a class="navbar-brand" style="font-size:32px;" href="#">众筹平台 - 用户维护</a></div>
+            <div><a class="navbar-brand" style="font-size:32px;" href="#">众筹平台 - 许可维护</a></div>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -95,12 +94,48 @@
                 }
             }
         });
+
+        loadData();
     });
 
 
 
 
-    var setting = {	};
+    var setting = {
+        view : {
+            addDiyDom: function(treeId, treeNode){
+                var icoObj = $("#" + treeNode.tId + "_ico"); // tId = permissionTree_1, $("#permissionTree_1_ico")
+                if ( treeNode.icon ) {
+                    icoObj.removeClass("button ico_docu ico_open").addClass(treeNode.icon).css("background","");
+                }
+            },
+            addHoverDom: function(treeId, treeNode){   //设置自定义按钮组,在节点后面悬停显示增删改按钮组.
+                var aObj = $("#" + treeNode.tId + "_a"); // tId = permissionTree_1, ==> $("#permissionTree_1_a")
+                aObj.attr("href", "javascript:;"); // 取消当前链接事件.
+                if (treeNode.editNameFlag || $("#btnGroup"+treeNode.tId).length>0) return;
+                var s = '<span id="btnGroup'+treeNode.tId+'">';
+                if ( treeNode.level == 0 ) { //根节点
+                    s += '<a class="btn btn-info dropdown-toggle btn-xs" style="margin-left:10px;padding-top:0px;" href="#" onclick="window.location.href=\'${APP_PATH}/permission/toAdd.htm?id='+treeNode.id+'\'" >&nbsp;&nbsp;<i class="fa fa-fw fa-plus rbg "></i></a>';
+                } else if ( treeNode.level == 1 ) { //分支节点
+                    s += '<a class="btn btn-info dropdown-toggle btn-xs" style="margin-left:10px;padding-top:0px;"  href="#" onclick="window.location.href=\'${APP_PATH}/permission/toUpdate.htm?id='+treeNode.id+'\'" title="修改权限信息">&nbsp;&nbsp;<i class="fa fa-fw fa-edit rbg "></i></a>';
+                    if (treeNode.children.length == 0) {
+                        s += '<a class="btn btn-info dropdown-toggle btn-xs" style="margin-left:10px;padding-top:0px;" href="#" onclick="deletePermission('+treeNode.id+')">&nbsp;&nbsp;<i class="fa fa-fw fa-times rbg "></i></a>';
+                    }
+                    s += '<a class="btn btn-info dropdown-toggle btn-xs" style="margin-left:10px;padding-top:0px;" href="#" onclick="window.location.href=\'${APP_PATH}/permission/toAdd.htm?id='+treeNode.id+'\'">&nbsp;&nbsp;<i class="fa fa-fw fa-plus rbg "></i></a>';
+                } else if ( treeNode.level == 2 ) { //叶子节点
+                    s += '<a class="btn btn-info dropdown-toggle btn-xs" style="margin-left:10px;padding-top:0px;"  href="#"  onclick="window.location.href=\'${APP_PATH}/permission/toUpdate.htm?id='+treeNode.id+'\'" title="修改权限信息">&nbsp;&nbsp;<i class="fa fa-fw fa-edit rbg "></i></a>';
+                    s += '<a class="btn btn-info dropdown-toggle btn-xs" style="margin-left:10px;padding-top:0px;" href="#" onclick="deletePermission('+treeNode.id+')">&nbsp;&nbsp;<i class="fa fa-fw fa-times rbg "></i></a>';
+                }
+
+                s += '</span>';
+                aObj.after(s);
+            },
+            removeHoverDom: function(treeId, treeNode){
+                $("#btnGroup"+treeNode.tId).remove();
+            }
+
+        }
+    };
 
     /* var zNodes =[
         { name:"父节点1 - 展开", open:true,
@@ -151,27 +186,53 @@
 
 
 
-    $.ajax({
+    function loadData(){
+        $.ajax({
 
-        url:"${APP_PATH}/permission/loadData.do",
-        type:"post",
-        success:function(result){
-            if(result.success){
-                var zNodes = result.data ;
-                $.fn.zTree.init($("#treeDemo"), setting, zNodes);
-            }else{
-                layer.msg(result.message, {time:1000, icon:5, shift:6});
+            url:"${APP_PATH}/permission/loadData.do",
+            type:"post",
+            success:function(result){
+                if(result.success){
+                    var zNodes = result.data ;
+                    $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                }else{
+                    alert("加载数据失败...");
+                }
             }
-        }
 
-    });
+        });
+    }
 
 
     /* $(document).ready(function(){
         $.fn.zTree.init($("#treeDemo"), setting, zNodes);
     }); */
 
+    function deletePermission(id){
 
+        layer.confirm("确定要删除许可吗?",  {icon: 3, title:'提示'}, function(cindex){
+            layer.close(cindex);
+            $.ajax({
+                url:"${APP_PATH}/permission/deletePermission.do",
+                data : {
+                    "id" : id
+                },
+                type:"post",
+                success:function(result){
+                    if(result.success){
+                        loadData();
+                    }else{
+                        alert("删除许可数据失败...");
+                    }
+                }
+
+            });
+        }, function(cindex){
+            layer.close(cindex);
+        });
+
+
+    }
 
 </script>
 <script type="text/javascript" src="${APP_PATH }/script/menu.js"></script>
