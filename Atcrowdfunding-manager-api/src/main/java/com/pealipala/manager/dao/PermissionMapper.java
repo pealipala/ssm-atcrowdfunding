@@ -19,4 +19,5 @@ public interface PermissionMapper {
 
     List<Permission> getChildByPid(Integer pid);
 
+    List<Integer> queryPermissionidsByRoleid(Integer id);
 }

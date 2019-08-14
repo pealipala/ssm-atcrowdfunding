@@ -53,4 +53,8 @@
       #{role.id}
     </foreach>
   </delete>
+
+  <delete id="deleteByRoleid" parameterType="int">
+    DELETE from t_role_permission where roleid=#{roleid}
+  </delete>
 </mapper>

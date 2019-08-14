@@ -24,4 +24,6 @@ public interface RoleMapper {
     Integer queryRoleCount(Map paramMap);
 
     int batchDeleteRole(Data datas);
+
+    void deleteByRoleid(Integer roleid);
 }

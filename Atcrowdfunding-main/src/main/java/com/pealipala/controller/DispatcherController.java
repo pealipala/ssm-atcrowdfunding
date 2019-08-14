@@ -1,5 +1,6 @@
 package com.pealipala.controller;
 
+import com.pealipala.bean.Permission;
 import com.pealipala.bean.User;
 import com.pealipala.manager.service.UserService;
 import com.pealipala.utils.AjaxResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -35,7 +37,25 @@ public class DispatcherController {
     public String reg(){ return "reg"; }
 
     @RequestMapping("/main")
-    public String main(){
+    public String main(HttpSession session){
+        //加载当前登录用户拥有的权限
+        User user = (User) session.getAttribute(Const.LOGIN_USER);
+        List<Permission> list=userService.queryPermissionById(user.getId());
+        Permission permissionRoot=null;
+        Map<Integer,Permission> map=new HashMap<>();
+        for (Permission permissionList:list) {
+            map.put(permissionList.getId(),permissionList);
+        }
+        for (Permission permission:list) {
+            Permission child=permission;
+            if (permission.getPid()==null){
+                permissionRoot=permission;
+            }else {
+                Permission parent = map.get(permission.getPid());
+                parent.getChildren().add(permission);
+            }
+        }
+        session.setAttribute("permissionRoot",permissionRoot);
         return "main";
     }
 

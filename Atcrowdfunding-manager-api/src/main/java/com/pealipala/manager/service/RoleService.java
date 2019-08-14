@@ -18,4 +18,6 @@ public interface RoleService {
     int deleteRole(Integer id);
 
     int batchDeleteRole(Data datas);
+
+    int savePermissionRelationship(Integer roleid, Data ids);
 }

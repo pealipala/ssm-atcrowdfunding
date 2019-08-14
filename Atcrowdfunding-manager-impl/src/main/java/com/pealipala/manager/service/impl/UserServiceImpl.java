@@ -1,5 +1,6 @@
 package com.pealipala.manager.service.impl;
 
+import com.pealipala.bean.Permission;
 import com.pealipala.bean.Role;
 import com.pealipala.bean.User;
 import com.pealipala.exception.LoginFailException;
@@ -112,6 +113,10 @@ public class UserServiceImpl implements UserService {
 
     public int deleteUserRoleRelationship(Integer userid, Data data) {
         return userMapper.deleteUserRoleRelationship(userid,data);
+    }
+
+    public List<Permission> queryPermissionById(Integer id) {
+        return userMapper.queryPermissionById(id);
     }
 
 

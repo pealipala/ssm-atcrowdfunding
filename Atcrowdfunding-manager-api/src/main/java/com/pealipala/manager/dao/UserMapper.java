@@ -1,5 +1,6 @@
 package com.pealipala.manager.dao;
 
+import com.pealipala.bean.Permission;
 import com.pealipala.bean.Role;
 import com.pealipala.bean.User;
 import com.pealipala.vo.Data;
@@ -34,6 +35,8 @@ public interface UserMapper {
     int saveUserRoleRelationship(@Param("userid") Integer userid,@Param("data") Data data);
 
     int deleteUserRoleRelationship(@Param("userid")Integer userid,@Param("data") Data data);
+
+    List<Permission> queryPermissionById(Integer id);
 
 //    List<User> queryUserPage(@Param("startIndex")Integer startIndex,@Param("pagesize") Integer pagesize);
 //

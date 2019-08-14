@@ -1,5 +1,6 @@
 package com.pealipala.manager.service;
 
+import com.pealipala.bean.Permission;
 import com.pealipala.bean.Role;
 import com.pealipala.bean.User;
 import com.pealipala.utils.Page;
@@ -35,4 +36,6 @@ public interface UserService {
     int saveUserRoleRelationship(Integer userid, Data data);
 
     int deleteUserRoleRelationship(Integer userid, Data data);
+
+    List<Permission> queryPermissionById(Integer id);
 }
