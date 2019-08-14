@@ -150,6 +150,7 @@
                 },
                 success : function (result) {
                     if (result.success){
+
                         window.location.href="${APP_PATH}/user/index.htm";
                     }else{
                         layer.msg(result.message, {time:1000, icon:5, shift:6});

@@ -337,6 +337,7 @@
                 },
                 success : function(result){
                     if(result.success){
+
                         window.location.href="${APP_PATH}/user/index.htm";
                     }else{
                         layer.msg("删除用户失败", {time:1000, icon:5, shift:6});
