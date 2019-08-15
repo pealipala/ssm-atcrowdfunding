@@ -8,7 +8,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +19,6 @@
     <link rel="stylesheet" href="${APP_PATH }/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="${APP_PATH }/css/font-awesome.min.css">
     <link rel="stylesheet" href="${APP_PATH }/css/main.css">
-    <link rel="stylesheet" href="${APP_PATH }/css/pagination.css">
     <style>
         .tree li {
             list-style-type: none;
@@ -41,7 +39,7 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li style="padding-top:8px;">
-                    <%@include file="/WEB-INF/jsp/common/userinfo.jsp"%>
+                    <%@include file="/WEB-INF/jsp/common/userinfo.jsp" %>
                 </li>
                 <li style="margin-left:10px;padding-top:8px;">
                     <button type="button" class="btn btn-default btn-danger">
@@ -100,7 +98,9 @@
                             <tfoot>
                             <tr >
                                 <td colspan="6" align="center">
-                                    <div id="Pagination" class="pagination"><!-- 这里显示分页 --></div>
+                                    <ul class="pagination">
+
+                                    </ul>
                                 </td>
                             </tr>
 
@@ -117,7 +117,6 @@
 <script src="${APP_PATH }/bootstrap/js/bootstrap.min.js"></script>
 <script src="${APP_PATH }/script/docs.min.js"></script>
 <script type="text/javascript" src="${APP_PATH }/jquery/layer/layer.js"></script>
-<script src="${APP_PATH}/jquery/pagination/jquery.pagination.js"></script>
 
 <script type="text/javascript">
     $(function () {
@@ -131,7 +130,7 @@
                 }
             }
         });
-        queryPageUser(0);
+        queryPageUser(1);
 //        showMenu();
     });
 
@@ -161,8 +160,8 @@
 
 
     var loadingIndex = -1 ;
-    function queryPageUser(pageIndex){
-        jsonObj.pageno = pageIndex + 1 ;
+    function queryPageUser(pageno){
+        jsonObj.pageno = pageno ;
         $.ajax({
             type : "POST",
             data : jsonObj,
@@ -197,17 +196,29 @@
 
                     $("tbody").html(content);
 
-                    // 创建分页
-                    $("#Pagination").pagination(page.totalsize, {
-                        num_edge_entries: 1, //边缘页数
-                        num_display_entries: 2, //主体页数
-                        callback: queryPageUser,
-                        items_per_page:10, //每页显示1项
-                        current_page:(page.pageno-1),
-                        prev_text : "上一页",
-                        next_text : "下一页"
-                    });
+                    var contentBar = '';
 
+                    if(page.pageno==1 ){
+                        contentBar+='<li class="disabled"><a href="#">上一页</a></li>';
+                    }else{
+                        contentBar+='<li><a href="#" onclick="pageChange('+(page.pageno-1)+')">上一页</a></li>';
+                    }
+
+                    for(var i = 1 ; i<= page.totalno ; i++ ){
+                        contentBar+='<li';
+                        if(page.pageno==i){
+                            contentBar+=' class="active"';
+                        }
+                        contentBar+='><a href="#" onclick="pageChange('+i+')">'+i+'</a></li>';
+                    }
+
+                    if(page.pageno==page.totalno ){
+                        contentBar+='<li class="disabled"><a href="#">下一页</a></li>';
+                    }else{
+                        contentBar+='<li><a href="#" onclick="pageChange('+(page.pageno+1)+')">下一页</a></li>';
+                    }
+
+                    $(".pagination").html(contentBar);
 
                 }else{
                     layer.msg(result.message, {time:1000, icon:5, shift:6});
@@ -326,6 +337,7 @@
                 },
                 success : function(result){
                     if(result.success){
+
                         window.location.href="${APP_PATH}/user/index.htm";
                     }else{
                         layer.msg("删除用户失败", {time:1000, icon:5, shift:6});

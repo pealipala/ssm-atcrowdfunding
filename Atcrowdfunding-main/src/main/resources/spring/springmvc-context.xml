@@ -59,6 +59,10 @@
         <property name="maxUploadSize" value="2097152"/>
         <property name="resolveLazily" value="true"/>
     </bean>
+    <mvc:interceptors>
+        <bean id="loginInterceptor" class="com.pealipala.interceptor.LoginInterceptor"></bean>
+        <bean id="authInterceptor" class="com.pealipala.interceptor.AuthInterceptor"></bean>
+    </mvc:interceptors>
 
 
 

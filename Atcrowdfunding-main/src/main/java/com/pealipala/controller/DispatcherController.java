@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 public class DispatcherController {
@@ -37,25 +35,7 @@ public class DispatcherController {
     public String reg(){ return "reg"; }
 
     @RequestMapping("/main")
-    public String main(HttpSession session){
-        //加载当前登录用户拥有的权限
-        User user = (User) session.getAttribute(Const.LOGIN_USER);
-        List<Permission> list=userService.queryPermissionById(user.getId());
-        Permission permissionRoot=null;
-        Map<Integer,Permission> map=new HashMap<>();
-        for (Permission permissionList:list) {
-            map.put(permissionList.getId(),permissionList);
-        }
-        for (Permission permission:list) {
-            Permission child=permission;
-            if (permission.getPid()==null){
-                permissionRoot=permission;
-            }else {
-                Permission parent = map.get(permission.getPid());
-                parent.getChildren().add(permission);
-            }
-        }
-        session.setAttribute("permissionRoot",permissionRoot);
+    public String main(){
         return "main";
     }
 
@@ -93,7 +73,28 @@ public class DispatcherController {
             paramMap.put("type", type);
 
             User user = userService.login(paramMap);
-
+            //---------------------
+            //加载当前登录用户拥有的权限
+            List<Permission> list=userService.queryPermissionById(user.getId());
+            Permission permissionRoot=null;
+            Map<Integer,Permission> map=new HashMap<>();
+            Set<String> uris=new HashSet<>();
+            for (Permission permissionList:list) {
+                map.put(permissionList.getId(),permissionList);
+                uris.add("/"+permissionList.getUrl());
+            }
+            session.setAttribute(Const.MY_URI,uris);
+            for (Permission permission:list) {
+                Permission child=permission;
+                if (permission.getPid()==null){
+                    permissionRoot=child;
+                }else {
+                    Permission parent = map.get(permission.getPid());
+                    parent.getChildren().add(permission);
+                }
+            }
+            session.setAttribute("permissionRoot",permissionRoot);
+            //---------------------
             session.setAttribute(Const.LOGIN_USER, user);
             result.setSuccess(true);
             // {"success":true}

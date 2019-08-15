@@ -117,7 +117,7 @@
 
 	<delete id="deleteUserRoleRelationship">
 		delete from t_user_role where userid=#{userid} and roleid in
-		<foreach collection="data.ids" item="roleid" separator=";" open="(" close=")">
+		<foreach collection="data.ids" item="roleid" separator="," open="(" close=")">
 			#{roleid}
 		</foreach>
 	</delete>
