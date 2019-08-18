@@ -1,9 +1,6 @@
 package com.pealipala.interceptor;
 
-import com.pealipala.bean.Permission;
-import com.pealipala.manager.service.PermissionService;
 import com.pealipala.utils.Const;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;

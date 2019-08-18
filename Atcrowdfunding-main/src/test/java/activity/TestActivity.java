@@ -47,7 +47,7 @@ public class TestActivity {
     public void test02(){
         System.out.println("processEngine="+processEngine);
         RepositoryService repositoryService = processEngine.getRepositoryService();
-        Deployment deploy = repositoryService.createDeployment().addClasspathResource("TestListener.bpmn").deploy();
+        Deployment deploy = repositoryService.createDeployment().addClasspathResource("test.bpmn").deploy();
         System.out.println("deploy="+deploy);
     }
 

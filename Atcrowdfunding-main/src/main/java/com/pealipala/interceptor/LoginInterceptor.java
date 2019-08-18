@@ -1,5 +1,6 @@
 package com.pealipala.interceptor;
 
+import com.pealipala.bean.Member;
 import com.pealipala.bean.User;
 import com.pealipala.utils.Const;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -28,7 +29,8 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         //取session
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(Const.LOGIN_USER);
-        if (user!=null){
+        Member member = (Member) session.getAttribute(Const.LOGIN_MENBER);
+        if (user!=null || member!=null){
             return true;
         }else{
             response.sendRedirect(request.getContextPath()+"/login.htm");
