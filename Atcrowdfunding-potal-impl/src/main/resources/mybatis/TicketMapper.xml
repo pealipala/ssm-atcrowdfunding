@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.pealipala.potal.dao.TicketMapper" >
+  <resultMap id="BaseResultMap" type="com.pealipala.bean.Ticket" >
+    <id column="id" property="id"/>
+    <result column="memberid" property="memberid"/>
+    <result column="piid" property="piid"/>
+    <result column="status" property="status"/>
+    <result column="authcode" property="authcode"/>
+    <result column="pstep" property="pstep"/>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_ticket
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="saveTicket" parameterType="com.pealipala.bean.Ticket" >
+    insert into t_ticket (memberid, status, pstep)
+    values (#{memberid},#{status},#{pstep})
+  </insert>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select *
+    from t_ticket
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select *
+    from t_ticket
+  </select>
+
+  <select id="getTicketByMemberId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select *
+    from t_ticket
+    where memberid = #{memberid,jdbcType=INTEGER} and status='0'
+  </select>
+  
+  
+  <update id="updatePstep">
+  	update t_ticket set pstep=#{pstep}  where memberid=#{memberid} and status='0'
+  </update>
+  
+  <update id="updatePstepAndPiid">
+  	update t_ticket set pstep=#{pstep},authcode=#{authcode},piid=#{piid} where id=#{id}
+  </update>
+
+
+  
+  
+</mapper>

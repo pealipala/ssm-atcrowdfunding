@@ -21,6 +21,16 @@ public class Member {
 
     private String accttype;
 
+    private String tel;
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
     public Integer getId() {
         return id;
     }

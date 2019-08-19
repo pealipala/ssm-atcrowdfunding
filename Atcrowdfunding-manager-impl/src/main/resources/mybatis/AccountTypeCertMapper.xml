@@ -31,4 +31,13 @@
     select id, accttype, certid
     from t_account_type_cert
   </select>
+  <select id="queryAccountTypeCert" resultType="map">
+    select  accttype, certid
+    from t_account_type_cert
+  </select>
+  <delete id="deleteAcctTypeCert">
+    delete from t_account_type_cert
+    where accttype = #{accttype,jdbcType=CHAR}
+    AND certid = #{certid,jdbcType=INTEGER}
+  </delete>
 </mapper>

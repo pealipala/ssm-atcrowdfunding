@@ -16,4 +16,16 @@ public class MemberServiceImpl implements MemberService {
     public Member login(Map<String, Object> paramMap) {
         return memberMapper.login(paramMap);
     }
+
+    public void updateAcctType(Member member) {
+        memberMapper.updateAcctType(member);
+    }
+
+    public void updateBasicInfo(Member loginMember) {
+        memberMapper.updateBasicInfo(loginMember);
+    }
+
+    public void updateEmail(Member loginMember) {
+        memberMapper.updateEmail(loginMember);
+    }
 }

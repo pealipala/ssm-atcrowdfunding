@@ -61,20 +61,26 @@
   
   
   
-   <!--<update id="updateAcctType" parameterType="com.pealipala.bean.Member" >-->
-    <!--update t_member-->
-    <!--set -->
-      <!--accttype = #{accttype,jdbcType=CHAR}-->
-    <!--where id = #{id,jdbcType=INTEGER}-->
-  <!--</update>-->
-  <!---->
-   <!--<update id="updateBasicinfo" parameterType="com.pealipala.bean.Member" >-->
-    <!--update t_member-->
-    <!--set -->
-     <!--realname = #{realname,jdbcType=VARCHAR},-->
-      <!--cardnum = #{cardnum,jdbcType=VARCHAR},-->
-      <!--tel = #{tel,jdbcType=VARCHAR}-->
-    <!--where id = #{id,jdbcType=INTEGER}-->
-  <!--</update>-->
+   <update id="updateAcctType" parameterType="com.pealipala.bean.Member" >
+    update t_member
+    set
+      accttype = #{accttype,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+   <update id="updateBasicInfo" parameterType="com.pealipala.bean.Member" >
+    update t_member
+    set
+     realname = #{realname,jdbcType=VARCHAR},
+      cardnum = #{cardnum,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateEmail">
+    update t_member
+    set
+     email = #{email,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
   
 </mapper>
