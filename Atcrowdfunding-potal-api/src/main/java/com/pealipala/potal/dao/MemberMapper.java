@@ -2,6 +2,7 @@ package com.pealipala.potal.dao;
 
 import com.pealipala.bean.Member;
 
+import java.util.List;
 import java.util.Map;
 
 public interface MemberMapper {
@@ -12,4 +13,10 @@ public interface MemberMapper {
     void updateBasicInfo(Member loginMember);
 
     void updateEmail(Member loginMember);
+
+    void updateAuthStatus(Member loginMember);
+
+    Member getMemberById(Integer memberid);
+
+    List<Map<String,Object>> queryCertByMemberid(Integer memberid);
 }

@@ -82,5 +82,6 @@
     <orderEntry type="library" name="Maven: org.imgscalr:imgscalr-lib:4.2" level="project" />
     <orderEntry type="library" name="Maven: org.vaadin.addons:dcharts-widget:0.10.0" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.5" level="project" />
+    <orderEntry type="module" module-name="Atcrowdfunding-potal-api" />
   </component>
 </module>

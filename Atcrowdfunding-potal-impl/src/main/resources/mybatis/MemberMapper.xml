@@ -41,9 +41,9 @@
       accttype = #{accttype,jdbcType=CHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="getMemberById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select id, loginacct, userpswd, username, email, authstatus, usertype, realname, 
-    cardnum, accttype
+    cardnum, accttype,tel
     from t_member
     where id = #{id,jdbcType=INTEGER}
   </select>
@@ -82,5 +82,20 @@
      email = #{email,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  
+  <update id="updateAuthStatus">
+    update t_member
+    set
+    authstatus = #{authstatus,jdbcType=CHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="queryCertByMemberid" resultType="map">
+    SELECT
+	t_cert.*,
+	t_member_cert.iconpath
+    FROM
+	t_cert
+	JOIN t_member_cert ON t_cert.id = t_member_cert.certid
+    WHERE
+	t_member_cert.memberid = #{memberid}
+  </select>
 </mapper>

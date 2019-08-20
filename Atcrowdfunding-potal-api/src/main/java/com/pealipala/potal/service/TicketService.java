@@ -1,5 +1,6 @@
 package com.pealipala.potal.service;
 
+import com.pealipala.bean.Member;
 import com.pealipala.bean.Ticket;
 
 public interface TicketService {
@@ -12,4 +13,8 @@ public interface TicketService {
     void updatePstep(Ticket ticket);
 
     void updatePstepAndPiid(Ticket ticket);
+
+    Member getMemberByPiid(String processInstanceId);
+
+    void updateStatus(Member member);
 }

@@ -42,6 +42,19 @@
   	update t_ticket set pstep=#{pstep},authcode=#{authcode},piid=#{piid} where id=#{id}
   </update>
 
+  <select id="getMemberByPiid" resultType="Member">
+    SELECT
+	t_member.*
+FROM
+	t_member
+	JOIN t_ticket ON t_ticket.memberid = t_member.id
+WHERE
+	t_ticket.piid = #{processInstanceId}
+  </select>
+
+  <update id="updateStatus">
+    update t_ticket set status='1'  where memberid=#{id,jdbcType=INTEGER}
+  </update>
 
   
   

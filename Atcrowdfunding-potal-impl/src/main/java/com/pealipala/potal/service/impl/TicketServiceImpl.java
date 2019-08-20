@@ -1,5 +1,6 @@
 package com.pealipala.potal.service.impl;
 
+import com.pealipala.bean.Member;
 import com.pealipala.bean.Ticket;
 import com.pealipala.potal.dao.TicketMapper;
 import com.pealipala.potal.service.TicketService;
@@ -26,5 +27,13 @@ public class TicketServiceImpl implements TicketService {
 
     public void updatePstepAndPiid(Ticket ticket) {
         ticketMapper.updatePstepAndPiid(ticket);
+    }
+
+    public Member getMemberByPiid(String processInstanceId) {
+        return ticketMapper.getMemberByPiid(processInstanceId);
+    }
+
+    public void updateStatus(Member member) {
+        ticketMapper.updateStatus(member);
     }
 }

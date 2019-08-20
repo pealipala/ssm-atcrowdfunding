@@ -14,8 +14,11 @@ import com.pealipala.utils.Const;
 import com.pealipala.vo.Data;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +42,8 @@ public class MemberController {
     private RepositoryService repositoryService;
     @Autowired
     private RuntimeService runtimeService;
+    @Autowired
+    private TaskService taskService;
 
     @RequestMapping("/accttype")
     public String accttype(){
@@ -254,7 +259,7 @@ public class MemberController {
             //记录流程步骤:
             Ticket ticket = ticketService.getTicketByMemberId(loginMember.getId()) ;
             ticket.setPstep("checkemail");
-            ticket.setPiid(processDefinition.getId());
+            ticket.setPiid(processInstance.getId());
             ticket.setAuthcode(authcode.toString());
             ticketService.updatePstepAndPiid(ticket);
 
@@ -281,6 +286,20 @@ public class MemberController {
         AjaxResult result=new AjaxResult();
         try {
             Member loginMember= (Member) session.getAttribute(Const.LOGIN_MENBER);
+            Ticket ticket = ticketService.getTicketByMemberId(loginMember.getId()) ;
+            if (ticket.getAuthcode().equals(authcode)){
+                //让当前系统用户完成验证码审核任务
+                Task task = taskService.createTaskQuery().processInstanceId(ticket.getPiid()).taskAssignee(loginMember.getLoginacct()).singleResult();
+                taskService.complete(task.getId());
+                //记录流程步骤:
+                ticket.setPstep("finishapply");
+                //更新用户申请状态
+                loginMember.setAuthstatus("1");
+                memberService.updateAuthStatus(loginMember);
+            }else {
+                result.setSuccess(false);
+                result.setMessage("验证码不正确,请重新获取");
+            }
 
             result.setSuccess(true);
         } catch (Exception e) {

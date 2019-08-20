@@ -6,6 +6,7 @@ import com.pealipala.potal.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,5 +28,17 @@ public class MemberServiceImpl implements MemberService {
 
     public void updateEmail(Member loginMember) {
         memberMapper.updateEmail(loginMember);
+    }
+
+    public void updateAuthStatus(Member loginMember) {
+        memberMapper.updateAuthStatus(loginMember);
+    }
+
+    public Member getMemberById(Integer memberid) {
+        return memberMapper.getMemberById(memberid);
+    }
+
+    public List<Map<String, Object>> queryCertByMemberid(Integer memberid) {
+        return memberMapper.queryCertByMemberid(memberid);
     }
 }
