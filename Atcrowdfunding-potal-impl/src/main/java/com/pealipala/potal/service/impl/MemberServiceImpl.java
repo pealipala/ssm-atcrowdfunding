@@ -41,4 +41,12 @@ public class MemberServiceImpl implements MemberService {
     public List<Map<String, Object>> queryCertByMemberid(Integer memberid) {
         return memberMapper.queryCertByMemberid(memberid);
     }
+
+    public int insert(Member member) {
+        return memberMapper.insert(member);
+    }
+
+    public Member selectLogin(String loginacct) {
+        return memberMapper.selectByloginacct(loginacct);
+    }
 }

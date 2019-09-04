@@ -19,4 +19,8 @@ public interface MemberService {
     Member getMemberById(Integer memberid);
 
     List<Map<String,Object>> queryCertByMemberid(Integer memberid);
+
+    int insert(Member member);
+
+    Member selectLogin(String loginacct);
 }

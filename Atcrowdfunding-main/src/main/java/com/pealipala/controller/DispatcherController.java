@@ -8,7 +8,6 @@ import com.pealipala.manager.service.UserService;
 import com.pealipala.utils.AjaxResult;
 import com.pealipala.utils.Const;
 import com.pealipala.utils.MD5Util;
-import com.sun.deploy.net.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 public class DispatcherController {
@@ -256,6 +258,153 @@ public class DispatcherController {
         }
 
         return result ;
+    }
+
+    /**
+     * * 异步请求---注册账号
+     * 1 验证用户名是否存在
+     * 2 验证密码格式
+     * @author : yechaoze
+     * @date : 2019/9/4 10:25
+     * @param loginacct :
+     * @param userpswd :
+     * @param type :
+     * @param email :
+     * @param realname :
+     * @return : java.lang.Object
+     */
+    @ResponseBody
+    @RequestMapping("/doReg")
+    public Object doReg(String loginacct, String userpswd, String type, String email,String realname){
+        AjaxResult result=new AjaxResult();
+        try {
+            //根据账户类型 查询是否有同名账户
+            if (type.equals("user")){
+                User user=userService.seleceLogin(loginacct);
+                if (user!=null){
+
+                }
+            }else{
+                Member member=memberService.selectLogin(loginacct);
+                if (member!=null){
+                    result.setMessage("账号名已存在请重新输入");
+                    result.setSuccess(false);
+                    return result;
+                }
+            }
+
+            //验证用户名 邮箱 真实姓名 密码 格式
+            if (!this.verifyLoginacct(loginacct)){
+                result.setMessage("账号名格式有误,请重新输入");
+                result.setSuccess(false);
+                return result;
+            }
+            if (!this.verifyuserpswd(userpswd)){
+                result.setMessage("密码格式有误,请重新输入");
+                result.setSuccess(false);
+                return result;
+            }
+            if (!this.verifyEmail(email)){
+                result.setMessage("邮箱格式有误,请重新输入");
+                result.setSuccess(false);
+                return result;
+            }
+            if (!this.verifyRealname(realname)){
+                result.setMessage("真实姓名有误,请重新输入");
+                result.setSuccess(false);
+                return result;
+            }
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String strdate = format.format(new Date());
+            //验证通过
+            if (type.equals("user")){
+                User regUser=new User();
+                regUser.setLoginacct(loginacct);
+                regUser.setUserpswd(MD5Util.digest(userpswd));
+                regUser.setEmail(email);
+                regUser.setCreatetime(strdate);
+                regUser.setUsername(realname);
+                int line=userService.regUser(regUser);
+                if (line>0){
+                    result.setMessage("注册成功");
+                    result.setSuccess(true);
+                }
+            }else {
+                Member member=new Member();
+                member.setUsername(realname);
+                member.setLoginacct(loginacct);
+                member.setUserpswd(MD5Util.digest(userpswd));
+                member.setEmail(email);
+                member.setAuthstatus("0");
+                member.setUsertype("0");
+                int line=memberService.insert(member);
+                if (line>0){
+                    result.setMessage("注册成功");
+                    result.setSuccess(true);
+                }
+            }
+        } catch (Exception e) {
+            result.setMessage("注册失败");
+            e.printStackTrace();
+            result.setSuccess(false);
+        }
+        return result;
+    }
+
+    /**
+     * 验证账户名格式
+     * @author : yechaoze
+     * @date : 2019/9/4 10:02
+     * @param loginacct :
+     * @return : boolean
+     */
+    private boolean verifyLoginacct(String loginacct){
+        Pattern p=Pattern.compile("[a-zA-Z]{1}[a-zA-Z0-9_]{1,15}");
+        Matcher m=p.matcher(loginacct);
+        boolean matches = m.matches();
+        return  matches;
+    }
+
+    /**
+     * 验证密码格式
+     * @author : yechaoze
+     * @date : 2019/9/4 10:05
+     * @param userpswd :
+     * @return : boolean
+     */
+    private boolean verifyuserpswd(String userpswd){
+        Pattern p=Pattern.compile("[a-zA-Z0-9]{1,16}");
+        Matcher m=p.matcher(userpswd);
+        boolean matches = m.matches();
+        return  matches;
+    }
+
+    /**
+     * 验证邮箱格式
+     * @author : yechaoze
+     * @date : 2019/9/4 10:05
+     * @param email :
+     * @return : boolean
+     */
+    private boolean verifyEmail(String email){
+        Pattern p=Pattern.compile("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$");
+        Matcher m=p.matcher(email);
+        boolean matches = m.matches();
+        return  matches;
+    }
+
+    /**
+     * 验证真实姓名
+     * @author : yechaoze
+     * @date : 2019/9/4 10:26
+     * @param realname :
+     * @return : boolean
+     */
+    private boolean verifyRealname(String realname){
+        Pattern p=Pattern.compile("^([\\u4e00-\\u9fa5]{1,20}|[a-zA-Z\\.\\s]{1,20})$");
+        Matcher m=p.matcher(realname);
+        boolean matches = m.matches();
+        return  matches;
     }
 
 }

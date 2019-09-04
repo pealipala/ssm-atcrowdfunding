@@ -11,6 +11,7 @@ public class ApplicationContextUtils implements ApplicationContextAware{
 	public static ApplicationContext applicationContext ;
 
 
+
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		ApplicationContextUtils.applicationContext = applicationContext ;
 	}

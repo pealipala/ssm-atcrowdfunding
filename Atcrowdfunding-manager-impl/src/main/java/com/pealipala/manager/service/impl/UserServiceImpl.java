@@ -119,5 +119,13 @@ public class UserServiceImpl implements UserService {
         return userMapper.queryPermissionById(id);
     }
 
+    public User seleceLogin(String loginacct) {
+        return userMapper.selectByLoginacct(loginacct);
+    }
+
+    public int regUser(User user) {
+        return userMapper.insert(user);
+    }
+
 
 }

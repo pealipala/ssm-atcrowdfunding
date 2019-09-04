@@ -38,6 +38,8 @@ public interface UserMapper {
 
     List<Permission> queryPermissionById(Integer id);
 
+    User selectByLoginacct(String loginacct);
+
 //    List<User> queryUserPage(@Param("startIndex")Integer startIndex,@Param("pagesize") Integer pagesize);
 //
 //    Integer queryUserCount();

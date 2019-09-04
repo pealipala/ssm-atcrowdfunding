@@ -38,4 +38,9 @@ public interface UserService {
     int deleteUserRoleRelationship(Integer userid, Data data);
 
     List<Permission> queryPermissionById(Integer id);
+
+    User seleceLogin(String loginacct);
+
+
+    int regUser(User user);
 }

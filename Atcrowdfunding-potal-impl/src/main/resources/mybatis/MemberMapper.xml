@@ -98,4 +98,7 @@
     WHERE
 	t_member_cert.memberid = #{memberid}
   </select>
+  <select id="selectByloginacct" parameterType="String" resultType="Member">
+    select * from t_member where loginacct = #{loginacct}
+  </select>
 </mapper>

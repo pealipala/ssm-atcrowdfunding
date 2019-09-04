@@ -144,4 +144,8 @@
 			AND t_user.id = #{id};
 	</select>
 
+	<select id="selectByLoginacct" parameterType="String" resultType="User">
+		select * from t_user where loginacct=#{loginacct}
+	</select>
+
 </mapper>

@@ -71,10 +71,10 @@
                         <div class="form-group has-feedback">
                             <div class="input-group">
                                 <div class="input-group-addon">查询条件</div>
-                                <input class="form-control has-success" type="text" placeholder="请输入查询条件">
+                                <input id="queryText" class="form-control has-success" type="text" placeholder="请输入查询条件">
                             </div>
                         </div>
-                        <button type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                        <button id="queryBtn" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
                     </form>
                     <br>
                     <hr style="clear:both;">
@@ -130,15 +130,13 @@
         pageQuery(0);
     });
 
-
+    var obj = {
+        "pageno" : 1,
+        "pagesize" : 3
+    };
     function pageQuery(pageindex) {
+        obj.pageno=pageindex+1;
         var loadingIndex = -1;
-
-        var obj = {
-            "pageno" : pageindex+1,
-            "pagesize" : 10
-        };
-
         $.ajax({
             url : "${APP_PATH}/authcert/pageQuery.do",
             type : "POST",
@@ -172,8 +170,8 @@
                     // 创建分页
                     var num_entries = page.totalsize ;
                     $("#Pagination").pagination(num_entries, {
-                        num_edge_entries: 2, //边缘页数
-                        num_display_entries: 4, //主体页数
+                        num_edge_entries: 1, //边缘页数
+                        num_display_entries: 2, //主体页数
                         callback: pageQuery, //查询当前页的数据.
                         items_per_page:page.pagesize, //每页显示1项
                         current_page:(page.pageno-1), //当前页,索引从0开始
@@ -188,7 +186,6 @@
             }
         });
     }
-
 </script>
 <script type="text/javascript" src="${APP_PATH }/script/menu.js"></script>
 </body>

@@ -33,5 +33,28 @@
   <insert id="saveMemberCert">
     insert into t_member_cert (memberid,certid,iconpath) values(#{memberid},#{certid},#{iconpath})
   </insert>
+  <select id="pageQuery" resultMap="BaseResultMap">
+    select * from t_cert
+    <where>
+      <if test="queryText!=null">
+        name LIKE concat("%",#{queryText},"%")
+      </if>
+    </where>
+    limit #{startIndex},#{pagesize}
+  </select>
+  <select id="queryUserCount" resultType="Integer">
+    select count(*) from t_cert
+    <where>
+      <if test="queryText!=null">
+        name LIKE concat("%",#{queryText},"%")
+      </if>
+    </where>
+  </select>
+  <delete id="deletes">
+    delete from t_cert where id in
+    <foreach collection="datas" open="(" close=")" separator="," item="cert">
+      #{cert.id}
+    </foreach>
+  </delete>
 
 </mapper>
