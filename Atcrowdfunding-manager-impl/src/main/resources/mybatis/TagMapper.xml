@@ -5,30 +5,32 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="pid" property="pid" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_tag
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.pealipala.bean.Tag" >
-    insert into t_tag (id, pid, name
+    insert into t_tag (id, pid, name ,icon
       )
-    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}
+    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{icon,jdbcType=VARCHAR}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.pealipala.bean.Tag" >
     update t_tag
     set pid = #{pid,jdbcType=INTEGER},
-      name = #{name,jdbcType=VARCHAR}
+      name = #{name,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select id, pid, name
+    select id, pid, name, icon
     from t_tag
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap" >
-    select id, pid, name
+    select id, pid, name , icon
     from t_tag
   </select>
 </mapper>
