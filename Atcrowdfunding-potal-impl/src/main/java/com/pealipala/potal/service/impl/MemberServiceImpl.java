@@ -49,4 +49,8 @@ public class MemberServiceImpl implements MemberService {
     public Member selectLogin(String loginacct) {
         return memberMapper.selectByloginacct(loginacct);
     }
+
+    public Member selectForget(String loginacct, String email) {
+        return memberMapper.selectForget(loginacct,email);
+    }
 }

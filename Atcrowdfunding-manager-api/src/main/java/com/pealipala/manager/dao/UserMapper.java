@@ -40,6 +40,8 @@ public interface UserMapper {
 
     User selectByLoginacct(String loginacct);
 
+    User selectForget(@Param(value = "loginacct") String loginacct,@Param(value = "email") String email);
+
 //    List<User> queryUserPage(@Param("startIndex")Integer startIndex,@Param("pagesize") Integer pagesize);
 //
 //    Integer queryUserCount();

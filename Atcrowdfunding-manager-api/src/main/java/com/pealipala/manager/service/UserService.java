@@ -43,4 +43,6 @@ public interface UserService {
 
 
     int regUser(User user);
+
+    User selectForget(String loginacct, String email);
 }

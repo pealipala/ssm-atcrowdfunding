@@ -101,4 +101,7 @@
   <select id="selectByloginacct" parameterType="String" resultType="Member">
     select * from t_member where loginacct = #{loginacct}
   </select>
+  <select id="selectForget" parameterType="String" resultType="Member">
+    select * from t_member where loginacct = #{loginacct} and email = #{email}
+  </select>
 </mapper>

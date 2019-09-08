@@ -1,6 +1,7 @@
 package com.pealipala.potal.dao;
 
 import com.pealipala.bean.Member;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -23,4 +24,6 @@ public interface MemberMapper {
     int insert(Member member);
 
     Member selectByloginacct(String loginacct);
+
+    Member selectForget(@Param(value = "loginacct") String loginacct,@Param(value = "email") String email);
 }

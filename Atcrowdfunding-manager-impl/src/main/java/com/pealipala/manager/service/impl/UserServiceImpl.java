@@ -127,5 +127,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.insert(user);
     }
 
+    public User selectForget(String loginacct, String email) {
+        return userMapper.selectForget(loginacct,email);
+    }
+
 
 }

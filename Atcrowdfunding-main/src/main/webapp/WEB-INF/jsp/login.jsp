@@ -57,7 +57,7 @@
             </label>
             <br>
             <label>
-                忘记密码
+                <a href="${APP_PATH }/forget.htm">忘记密码</a>
             </label>
             <label style="float:right">
                 <a href="${APP_PATH }/reg.htm">我要注册</a>

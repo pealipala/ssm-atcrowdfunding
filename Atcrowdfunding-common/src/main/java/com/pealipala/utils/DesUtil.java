@@ -17,7 +17,7 @@ public class DesUtil {
 	private final static String DES = "DES";
 
 	public static void main(String[] args) throws Exception {
-		String data = "123 456";
+		String data = "pealipala";
 		String key = "123222!@#$%";// 相当于密码本
 		System.err.println(encrypt(data, key));
 		System.err.println(decrypt(encrypt(data, key), key));

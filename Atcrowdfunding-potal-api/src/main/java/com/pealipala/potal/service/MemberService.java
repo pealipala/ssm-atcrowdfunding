@@ -23,4 +23,6 @@ public interface MemberService {
     int insert(Member member);
 
     Member selectLogin(String loginacct);
+
+    Member selectForget(String loginacct, String email);
 }

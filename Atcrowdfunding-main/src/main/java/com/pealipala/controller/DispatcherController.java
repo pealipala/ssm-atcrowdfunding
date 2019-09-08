@@ -7,12 +7,15 @@ import com.pealipala.potal.service.MemberService;
 import com.pealipala.manager.service.UserService;
 import com.pealipala.utils.AjaxResult;
 import com.pealipala.utils.Const;
-import com.pealipala.utils.MD5Util;
+import com.pealipala.utils.DesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,11 +32,21 @@ public class DispatcherController {
     private UserService userService;
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private JavaMailSenderImpl javaMailSender;
 
     @RequestMapping("/index")
     public String index(){
         return "index";
     }
+
+    @RequestMapping("/forget")
+    public String forget(){
+        return "forget";
+    }
+
+    //加密密码本
+    String key = "123222!@#$%";// 相当于密码本
 
     /**
      * 判断是否直接登录
@@ -198,7 +211,7 @@ public class DispatcherController {
         try {
             Map<String,Object> paramMap = new HashMap<String,Object>();
             paramMap.put("loginacct", loginacct);
-            paramMap.put("userpswd", MD5Util.digest(userpswd));
+            paramMap.put("userpswd", DesUtil.encrypt(userpswd,key));
             paramMap.put("type", type);
             if ("user".equals(type)){
                 User user = userService.login(paramMap);
@@ -320,7 +333,7 @@ public class DispatcherController {
             if (type.equals("user")){
                 User regUser=new User();
                 regUser.setLoginacct(loginacct);
-                regUser.setUserpswd(MD5Util.digest(userpswd));
+                regUser.setUserpswd(DesUtil.encrypt(userpswd,key));
                 regUser.setEmail(email);
                 regUser.setCreatetime(strdate);
                 regUser.setUsername(realname);
@@ -333,8 +346,9 @@ public class DispatcherController {
                 Member member=new Member();
                 member.setUsername(realname);
                 member.setLoginacct(loginacct);
-                member.setUserpswd(MD5Util.digest(userpswd));
+                member.setUserpswd(DesUtil.encrypt(userpswd,key));
                 member.setEmail(email);
+                member.setRealname(realname);
                 member.setAuthstatus("0");
                 member.setUsertype("0");
                 int line=memberService.insert(member);
@@ -407,4 +421,76 @@ public class DispatcherController {
         return  matches;
     }
 
+    /**
+     * 忘记密码-->邮箱获取密码
+     * @author : yechaoze
+     * @date : 2019/9/8 13:11
+     * @param loginacct :
+     * @param email :
+     * @param type :
+     * @return : java.lang.Object
+     */
+    @ResponseBody
+    @RequestMapping("/doForget")
+    public Object doForget(String loginacct,String email,String type){
+        AjaxResult result=new AjaxResult();
+        try {
+            //判断账户类型-->验证账号名是否存在
+            if (type.equals("user")){
+                User user=userService.selectForget(loginacct,email);
+                if (user==null){
+                    result.setMessage("账户名与邮箱不匹配");
+                    result.setSuccess(false);
+                    return result;
+                }
+                String emailMessage=user.getUserpswd();
+                this.sendPassword(emailMessage,email);
+                result.setSuccess(true);
+                return result;
+            }else if (type.equals("member")){
+                Member member=memberService.selectForget(loginacct,email);
+                if (member==null){
+                    result.setMessage("账户名与邮箱不匹配");
+                    result.setSuccess(false);
+                    return result;
+                }
+                String emailMessage=member.getUserpswd();
+                this.sendPassword(emailMessage,email);
+                result.setSuccess(true);
+                return result;
+            }
+        } catch (Exception e) {
+            result.setMessage("验证邮箱或者账号名失败");
+            e.printStackTrace();
+            result.setSuccess(false);
+        }
+        return true;
+    }
+
+    /**
+     *  使用spring邮箱发送器发送密码
+     * @author : yechaoze
+     * @date : 2019/9/8 13:27
+     * @param message :
+     * @param toEmailAddress :
+     * @return : void
+     */
+    private void sendPassword(String message,String toEmailAddress){
+        try {
+            MimeMessage mail = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mail);
+            helper.setSubject("标题");
+            StringBuilder content = new StringBuilder();
+
+            String s = DesUtil.decrypt(message,key);
+
+            content.append("<a href='http://www.atcrowdfunding.com/login.htm'>password:"+s+"</a>");
+            helper.setText(content.toString(), true);
+            helper.setFrom("admin@pealipala.cn");
+            helper.setTo(toEmailAddress);
+            javaMailSender.send(mail);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
